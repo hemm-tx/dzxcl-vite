@@ -1,0 +1,31 @@
+.M-clock {
+  cursor: default;
+  line-height: 16px;
+  font-family: "Share Tech Mono", monospace;
+  text-align: center;
+  // transform: translate(-50%, -50%);
+  color: #daf6ff;
+  text-shadow: 0 0 20px #0aafe6, 0 0 20px rgba(10, 175, 230, 0);
+
+  .time {
+    letter-spacing: 0.08em;
+    font-size: 16px;
+    padding: 2px 0;
+    font-family: electronicFont;
+  }
+
+  .date {
+    letter-spacing: 0.1em;
+    font-size: 14px;
+    display: flex;
+    span {
+      padding-right: 5px;
+      font-family: electronicFont;
+    }
+    ol {
+      font-weight: 600;
+      font-size: 13px;
+      font-family: bitterBoldFont;
+    }
+  }
+}

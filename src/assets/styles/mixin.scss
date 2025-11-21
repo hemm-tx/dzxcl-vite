@@ -1,0 +1,132 @@
+$margin-5: 0.5rem;
+$margin-10: 1rem;
+$margin-15: 1.5rem;
+$margin-20: 2rem;
+$horizontal-nav-height: 60px;
+$header-height: 80px;
+
+@mixin bg-img-container {
+  /* 设置背景图像完全覆盖容器，保持其宽高比 */
+  background-size: cover;
+  /* 背景图像不重复 */
+  background-repeat: no-repeat;
+  /* 让背景图像始终位于容器的中心 */
+  background-position: center;
+}
+
+.bg-img-container {
+  @include bg-img-container;
+}
+
+@mixin transition($style, $duration: 0.3s, $delay: 0s) {
+  transition: $style $duration ease-in-out $delay;
+}
+
+@font-face {
+  font-family: electronicFont;
+  src: url("../fonts/DS-DIGIT-4.ttf");
+}
+
+@font-face {
+  font-family: bitterBoldFont;
+  src: url("../fonts/Bitter-Bold.ttf");
+}
+
+.electronicFont {
+  font-family: electronicFont;
+}
+
+.text-linear-gradient {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+  width: 3px; /* 设置滚动条的宽度 */
+  height: 3px;
+  &:hover {
+    width: 3px; /* 设置滚动条的宽度 */
+    height: 3px;
+  }
+}
+
+/* 隐藏 IE、Edge 和 Firefox 的滚动条 */
+.example {
+  -ms-overflow-style: none; /* IE , Edge */
+  scrollbar-width: none; /* Firefox */
+  overflow: hidden;
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    /* 隐藏 Chrome、Safari 和 Opera 的滚动条 */
+    display: none;
+  }
+  // &::-webkit-scrollbar {
+  // }
+}
+
+/* 设置滚动条的滑块样式 */
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 3px; /* 设置滑块的圆角 */
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* 设置滚动条的轨道样式 */
+::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.1); /* 设置轨道的背景颜色 */
+}
+
+/* 设置滚动条的角落样式 */
+::-webkit-scrollbar-corner {
+  background-color: rgba(0, 0, 0, 0.1); /* 设置角落的背景颜色 */
+}
+
+.electronicFont {
+  font-family: electronicFont;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-right {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-left {
+  from {
+    transform: translateX(200%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes twinkling {
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
+  }
+}

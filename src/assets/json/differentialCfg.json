@@ -1,0 +1,65 @@
+[
+  {
+    "x": "880",
+    "y": "800",
+    "id": "YC-001",
+    "position": "热分析室",
+    "description": "LFM108微压差传感器"
+  },
+  {
+    "x": "2230",
+    "y": "210",
+    "id": "YC-002",
+    "position": "理化分析室",
+    "description": "LFM108微压差传感器"
+  },
+  {
+    "x": "1530",
+    "y": "925",
+    "id": "YC-003",
+    "position": "预留室1",
+    "description": "LFM108微压差传感器"
+  },
+  {
+    "x": "1450",
+    "y": "512",
+    "id": "YC-004",
+    "position": "预留室2",
+    "description": "LFM108微压差传感器"
+  },
+  {
+    "x": "1820",
+    "y": "925",
+    "position": "研发仓库",
+    "id": "YC-005",
+    "description": "LFM108微压差传感器"
+  },
+  {
+    "x": "1900",
+    "y": "430",
+    "position": "ICP室",
+    "id": "YC-006",
+    "description": "LFM108微压差传感器"
+  },
+  {
+    "x": "2200",
+    "y": "430",
+    "position": "预留洁净室1",
+    "id": "YC-007",
+    "description": "LFM108微压差传感器"
+  },
+  {
+    "x": "2300",
+    "y": "600",
+    "position": "预留洁净室2",
+    "id": "YC-008",
+    "description": "LFM108微压差传感器"
+  },
+  {
+    "x": "2210",
+    "y": "550",
+    "position": "缓冲室",
+    "id": "YC-009",
+    "description": "LFM108微压差传感器"
+  }
+]

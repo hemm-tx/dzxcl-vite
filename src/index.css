@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+/* * {
+  margin: 0;
+  padding: 0;
+} */
+
+.tabs-nav-space-evenly .ant-tabs-nav-list {
+  justify-content: space-evenly;
+}
+
+.cont-h-full .ant-tabs-content {
+  height: 100%;
+}
+
+.cont-h-full .ant-tabs-tabpane {
+  height: 100%;
+}
+
+.ant-spin-nested-loading,
+.ant-spin-container {
+  width: 100%;
+  height: 100%;
+}
+
+.icon-wrapper:hover {
+  --start: #ff5733;
+  --end: #ffc300;
+}
+.icon-wrapper.active {
+  --start: #28a745;
+  --end: #85e085;
+}
+.icon-wrapper.active:hover {
+  --start: #28a745;
+  --end: #85e085;
+}

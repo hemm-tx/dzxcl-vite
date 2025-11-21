@@ -1,0 +1,65 @@
+[
+  {
+    "x": "1000",
+    "y": "800",
+    "position": "热分析室",
+    "id": "WSD-010",
+    "description": "LFH20温湿度传感器"
+  },
+  {
+    "x": "2360",
+    "y": "210",
+    "position": "理化分析室",
+    "id": "WSD-011",
+    "description": "LFH20温湿度传感器"
+  },
+  {
+    "x": "1630",
+    "y": "925",
+    "position": "预留室1",
+    "id": "WSD-012",
+    "description": "LFH20温湿度传感器"
+  },
+  {
+    "x": "1540",
+    "y": "512",
+    "position": "预留室2",
+    "id": "WSD-013",
+    "description": "LFH20温湿度传感器"
+  },
+  {
+    "x": "1950",
+    "y": "925",
+    "position": "研发仓库",
+    "id": "WSD-014",
+    "description": "LFH20温湿度传感器"
+  },
+  {
+    "x": "2000",
+    "y": "430",
+    "position": "ICP室",
+    "id": "WSD-015",
+    "description": "LFH20温湿度传感器"
+  },
+  {
+    "x": "2000",
+    "y": "583",
+    "position": "前处理室",
+    "id": "WSD-016",
+    "description": "LFH20温湿度传感器"
+  },
+  {
+    "x": "2310",
+    "y": "430",
+    "position": "预留洁净室1",
+    "id": "WSD-017",
+    "description": "LFH20温湿度传感器"
+  },
+  {
+    "x": "2420",
+    "y": "600",
+    "position": "预留洁净室2",
+    "id": "WSD-018",
+    "description": "LFH20温湿度传感器"
+  }
+]

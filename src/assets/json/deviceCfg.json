@@ -1,0 +1,30 @@
+[
+  {
+    "x": "1805",
+    "y": "430",
+    "position": "ICP室",
+    "id": ["QYYCKZQ-019"],
+    "description": "QAVC10-区域压差控制器"
+  },
+  {
+    "x": "1865",
+    "y": "580",
+    "position": "前处理室",
+    "id": ["QYYCKZQ-020", "TFG-033"],
+    "description": "QAVC10-区域压差控制器"
+  },
+  {
+    "x": "2120",
+    "y": "550",
+    "position": "缓冲室",
+    "id": ["QYYCKZQ-021"],
+    "description": "ZPC-211V-微压差传感器"
+  },
+  {
+    "x": "1670",
+    "y": "210",
+    "id": ["TFG-034", "TFG-035"],
+    "position": "化学分析室",
+    "description": "通风柜"
+  }
+]
