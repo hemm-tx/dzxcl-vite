@@ -56,6 +56,7 @@ const Weather: React.FC = () => {
       const diff = (now.getTime() - date.getTime()) / 1000;
       if (diff >= 60 * 60 * 2) refreshClick();
       else setTimer(setInterval(() => refreshClick(), 60 * 60 * 1000 - diff * 1000));
+      setUpdateTime(formattedDate(weather.obsTime));
     }
     return () => timer && clearInterval(timer);
   }, [weather.obsTime]);
@@ -70,11 +71,6 @@ const Weather: React.FC = () => {
     const second = date.getSeconds().toString().padStart(2, "0");
     return [`${year}-${month}-${day}`, `${hour}:${minute}:${second}`];
   };
-
-  useEffect(() => {
-    setUpdateTime(formattedDate(weather.obsTime));
-    return () => {};
-  }, []);
 
   return (
     <CustomizeWrapperComponent

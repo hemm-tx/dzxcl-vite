@@ -18,7 +18,7 @@ export default function Home() {
       <Zoom triggerOnce duration={animationDuration} className="absolute top-20 w-[95%]">
         <svg viewBox="0 0 3654 1224" preserveAspectRatio="xMidYMid meet" style={{ width: "100%", height: "auto" }}>
           <image href="/modal/pipeline.png" x="0" y="0" width="3654" height="1224" />
-          {data?.fjStatus.pf1 && (
+          {data?.fjStatus.pf2 && (
             <path
               id="Exhaust-fan-1"
               d="M2106,46 L2164,560 Q2161,571 2145,577 L1820,577 Q1812,575 1805,563 L1805,468"
@@ -30,7 +30,7 @@ export default function Home() {
               strokeDashoffset="80"
             />
           )}
-          {data?.fjStatus.pf2 && (
+          {data?.fjStatus.pf1 && (
             <path
               id="Exhaust-fan-2"
               d="M1734,57 L1728,298 Q1728,312 1705,320 L1397,320 Q1368,324 1358,349 L1278,864 Q1274,886 1251,889 L872,890"

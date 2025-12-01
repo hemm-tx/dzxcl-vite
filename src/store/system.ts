@@ -7,7 +7,7 @@ const counterSlice = createSlice({
     mediaMTXStart: false,
     cameraIconShow: true,
     humitureIconShow: true,
-    differentialIconShow: true,
+    differentialIconShow: false,
     deviceIconShow: true,
   },
   reducers: {

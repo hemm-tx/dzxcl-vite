@@ -1,6 +1,6 @@
 import { Button, Switch, Descriptions, Radio, type RadioChangeEvent } from "antd";
 import { Clock } from "./Clock";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector, setAnimationDuration, login_out, setMediaMTXStart } from "@/store";
@@ -115,6 +115,13 @@ const SystemSet = () => {
         .invoke("stop_mediamtx");
     }
   };
+
+  useEffect(() => {
+    setTimeout(() => !system.mediaMTXStart && handleSwitchMedia(), 5000);
+    return () => {
+      system.mediaMTXStart && handleSwitchMedia();
+    };
+  });
 
   return (
     <Descriptions
