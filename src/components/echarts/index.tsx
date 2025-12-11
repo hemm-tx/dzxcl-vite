@@ -55,7 +55,7 @@ const EchartsComponent = <T extends EchartsOption>({ options, loading = false, s
   useEffect(() => {
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
-  });
+  }, []);
 
   return <div ref={conRef} style={style} className={className}></div>;
 };
