@@ -69,6 +69,7 @@ export default function Index() {
   // }, [user.access_token]);
 
   useEffect(() => {
+    dispatch(get_full_data());
     const _timer = setInterval(() => dispatch(get_full_data()), 5000);
     return () => clearInterval(_timer);
   }, []);
