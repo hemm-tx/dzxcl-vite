@@ -8,10 +8,12 @@ import {
   TooltipComponent,
   GridComponent,
   LegendComponent,
+  DataZoomComponent,
   type TitleComponentOption,
   type TooltipComponentOption,
   type GridComponentOption,
   type LegendComponentOption,
+  type DataZoomComponentOption,
 } from "echarts/components";
 // 引入 Canvas 标签布局、过渡动画等特性
 import { LabelLayout } from "echarts/features";
@@ -19,15 +21,14 @@ import { LabelLayout } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
 
 // 注册组件
-echarts.use([BarChart, LineChart, PieChart, TitleComponent, TooltipComponent, GridComponent, LabelLayout, CanvasRenderer, LegendComponent]);
+echarts.use([BarChart, LineChart, PieChart, TitleComponent, TooltipComponent, GridComponent, LabelLayout, CanvasRenderer, LegendComponent, DataZoomComponent]);
 
 export { echarts };
 
 // 定义 BarChartOption、LineChartOption、PieChartOption 类型
-type GlobalOptions = TitleComponentOption & TooltipComponentOption & GridComponentOption & LegendComponentOption;
-
-export type BarChartOption = echarts.ComposeOption<BarSeriesOption & GlobalOptions>;
-
-export type LineChartOption = echarts.ComposeOption<LineSeriesOption & GlobalOptions>;
-
-export type PieChartOption = echarts.ComposeOption<PieSeriesOption & GlobalOptions>;
+export type GlobalOptions = echarts.ComposeOption<
+  TitleComponentOption & TooltipComponentOption & GridComponentOption & LegendComponentOption & DataZoomComponentOption
+>;
+export type BarChartOption = echarts.ComposeOption<BarSeriesOption>;
+export type LineChartOption = echarts.ComposeOption<LineSeriesOption>;
+export type PieChartOption = echarts.ComposeOption<PieSeriesOption>;

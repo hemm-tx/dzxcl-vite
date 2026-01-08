@@ -105,3 +105,11 @@ declare interface GetFullDataProps {
   alarm: AlarmStatusProps;
   log: { total: number };
 }
+
+declare interface MDeviceDetailColumnProps {
+  data: { label: string; title: string; unit: string; value: number }[];
+  device_id: string;
+  fault: boolean;
+  online: boolean;
+  updated_at: string;
+}

@@ -1,24 +1,25 @@
-import { useEffect, useRef } from "react";
-import { echarts, type BarChartOption, type LineChartOption, type PieChartOption } from "./config";
+import React, { useEffect, useRef } from "react";
+import { echarts, type GlobalOptions, type BarChartOption, type LineChartOption, type PieChartOption } from "./config";
 import themeCfg from "./theme.json";
 
-type EchartsOption = BarChartOption | LineChartOption | PieChartOption;
-
 // 定义组件必要的数据类型
-type ComponentConfig = {
-  loading?: boolean;
-  style?: React.CSSProperties;
-  className?: string;
-};
-
-// 定义 ChartProps 类型
+type EchartsOption = BarChartOption | LineChartOption | PieChartOption;
+type ComponentConfig = { loading?: boolean; style?: React.CSSProperties; className?: string };
 type ChartProps<T> = {
+  onChartReady?: (instance: echarts.ECharts) => void;
   options: T;
+  globalOptions?: GlobalOptions;
 } & ComponentConfig;
 
 echarts.registerTheme("custom", themeCfg);
-
-const EchartsComponent = <T extends EchartsOption>({ options, loading = false, style = {}, className = "size-full" }: ChartProps<T>) => {
+const EchartsComponent: React.FC<ChartProps<EchartsOption>> = ({
+  options,
+  globalOptions,
+  onChartReady,
+  loading = false,
+  style = {},
+  className = "size-full",
+}) => {
   const conRef = useRef<HTMLDivElement | null>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
 
@@ -26,7 +27,8 @@ const EchartsComponent = <T extends EchartsOption>({ options, loading = false, s
     // 初始化 Echarts
     if (conRef.current) {
       chartInstance.current = echarts.init(conRef.current, "custom");
-      chartInstance.current.setOption(options);
+      chartInstance.current.setOption({ ...options, ...globalOptions }, false, true);
+      onChartReady?.(chartInstance.current);
     }
 
     // 销毁组件实例，释放内存
@@ -34,14 +36,10 @@ const EchartsComponent = <T extends EchartsOption>({ options, loading = false, s
   }, []);
 
   // 监听 options 变化，更新组件实例
-  useEffect(() => chartInstance.current?.setOption(options), [options]);
+  useEffect(() => chartInstance.current?.setOption({ ...options }), [options]);
 
   // 定义 resize 函数，更新 Echarts 尺寸
-  const resize = () => {
-    chartInstance.current?.resize({
-      animation: { duration: 500 },
-    });
-  };
+  const resize = () => chartInstance.current?.resize({ animation: { duration: 500 } });
 
   // 定义 loading 状态
   useEffect(() => {

@@ -5,6 +5,7 @@ import { Button } from "antd";
 import { useEffect, useState } from "react";
 import { RedoOutlined } from "@ant-design/icons";
 import { Fade } from "react-awesome-reveal";
+import { formattedDate } from "@/assets/js";
 
 export default function Home() {
   const device_pie_data = useAppSelector(selectDevicePieChartData);
@@ -61,17 +62,6 @@ const Weather: React.FC = () => {
     return () => timer && clearInterval(timer);
   }, [weather.obsTime]);
 
-  const formattedDate = (timeStr: string) => {
-    const date = new Date(timeStr);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    const hour = date.getHours().toString().padStart(2, "0");
-    const minute = date.getMinutes().toString().padStart(2, "0");
-    const second = date.getSeconds().toString().padStart(2, "0");
-    return [`${year}-${month}-${day}`, `${hour}:${minute}:${second}`];
-  };
-
   return (
     <CustomizeWrapperComponent
       loading={loading}
@@ -119,48 +109,29 @@ const Weather: React.FC = () => {
 };
 
 const CreatePieChart: React.FC<{ total: number; data: any; title: string }> = ({ total, data, title }) => {
+  enum HorizontalAlign {
+    left = "left",
+    center = "center",
+    right = "right",
+  }
+
   const rich = {
-    yellow: {
-      color: "#ffc72b",
-      padding: [-5, 2],
-      align: "center",
-    },
-    total: {
-      color: "#ffc72b",
-      fontSize: 22,
-      align: "center",
-    },
-    white: {
-      color: "#fff",
-      padding: [3, 0],
-      align: "center",
-    },
-    blue: {
-      color: "#49dff0",
-      padding: [3, 0],
-      align: "center",
-    },
-    hr: {
-      borderColor: "#0b5263",
-      width: "100%",
-      borderWidth: 1,
-      height: 0,
-    },
+    yellow: { color: "#ffc72b", padding: [-5, 2], align: HorizontalAlign.center },
+    total: { color: "#ffc72b", fontSize: 22, align: HorizontalAlign.center },
+    white: { color: "#fff", padding: [3, 0], align: HorizontalAlign.center },
+    blue: { color: "#49dff0", padding: [3, 0], align: HorizontalAlign.center },
+    hr: { borderColor: "#0b5263", width: "100%", borderWidth: 1, height: 0 },
   };
 
   return (
     <PieChart
-      options={{
+      globalOptions={{
         title: {
           text: title,
           left: "center",
           top: "50%",
           padding: [14, 0],
-          textStyle: {
-            color: "#fff",
-            fontSize: 12,
-            align: "center",
-          },
+          textStyle: { color: "#fff", fontSize: 12, align: "center" },
         },
         legend: {
           selectedMode: false,
@@ -170,11 +141,10 @@ const CreatePieChart: React.FC<{ total: number; data: any; title: string }> = ({
           top: "center",
           icon: "none",
           align: "center",
-          textStyle: {
-            color: "#fff",
-            rich,
-          },
+          textStyle: { color: "#fff", rich },
         },
+      }}
+      options={{
         series: [
           {
             name: "设备状态",
@@ -182,9 +152,7 @@ const CreatePieChart: React.FC<{ total: number; data: any; title: string }> = ({
             radius: ["35%", "65%"],
             avoidLabelOverlap: false,
             padAngle: 5,
-            itemStyle: {
-              borderRadius: 10,
-            },
+            itemStyle: { borderRadius: 10 },
             label: {
               formatter: (params: any) => {
                 const percent = ((params.value / total) * 100).toFixed(1);

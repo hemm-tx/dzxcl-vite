@@ -1,11 +1,12 @@
 import { Button, Tabs, Descriptions, Switch, Radio } from "antd";
 import { SettingOutlined, BlockOutlined, LineChartOutlined } from "@ant-design/icons";
-import { Border5, Flex, LineChart, CustomizeWrapperComponent } from "@/components";
-import { useState } from "react";
+import { Border5, Flex, LineChartDemo, CustomizeWrapperComponent, type MChartDemoFetchDataProps } from "@/components";
+import { useState, useRef } from "react";
 import { DeviceInputNumber, DeviceOnlineBadge } from "./Devices";
 import { selectFJData, useAppDispatch, useAppSelector, post_edit_device_params } from "@/store";
 import { DeviceService, type ChartDataProps } from "@/api";
 import { message } from "@/utils/antdGlobal";
+import { formattedDate_EST } from "@/assets/js";
 
 interface ICardProps {
   label: string;
@@ -37,14 +38,14 @@ type menuProps = "chart" | "set" | "card";
 export const DeviceCard: React.FC<IDeviceCardProps> = ({ url, online, cardData, device_id, device_type, setParamsTab }) => {
   const [showCont, setShowCont] = useState<menuProps>("card");
   const [loading, setLoading] = useState(false);
-  const [chartCfg, setChartCfg] = useState<ChartDataProps | undefined>(undefined);
+  const chartCfg = useRef<ChartDataProps | undefined>(undefined);
 
   const menuClick = async (key: menuProps) => {
     setShowCont(key);
     if (key === "chart") {
       setLoading(true);
       await DeviceService.get_chart_data(device_type, device_id)
-        .then((res) => setChartCfg(res.data))
+        .then((res) => (chartCfg.current = res.data))
         .finally(() => setLoading(false));
     }
   };
@@ -53,6 +54,41 @@ export const DeviceCard: React.FC<IDeviceCardProps> = ({ url, online, cardData, 
     { id: "card", icon: <BlockOutlined /> },
     { id: "chart", icon: <LineChartOutlined /> },
   ];
+
+  const push_chart_data = (props: MChartDemoFetchDataProps) => {
+    const { start, end, onStart, onEnd } = props;
+    if (!chartCfg.current) return;
+    const current_xAxis = chartCfg.current.xAxis;
+    const total = current_xAxis.length + 100 > 1000 ? 1000 : current_xAxis.length + 100;
+    let query;
+    if (end && start) {
+      const start_time = formattedDate_EST(current_xAxis[current_xAxis.length > 900 ? current_xAxis.length - 900 : 0]);
+      query = DeviceService.get_device_detail<MDeviceDetailColumnProps>(device_id, start_time, undefined, 1, total);
+    } else {
+      const start_time = start ? formattedDate_EST(current_xAxis[current_xAxis.length > 900 ? current_xAxis.length - 900 : 0]) : undefined;
+      const end_time = end ? formattedDate_EST(current_xAxis[current_xAxis.length - 1 > 900 ? 900 : current_xAxis.length - 1]) : undefined;
+      query = DeviceService.get_device_detail<MDeviceDetailColumnProps>(device_id, start_time, end_time, 1, total);
+    }
+    onStart?.();
+    query
+      .then((res) => {
+        if (res.data.length <= 1) {
+          message.info("没有更多数据");
+          return;
+        }
+        if (!chartCfg.current) return;
+        chartCfg.current.xAxis = [];
+        chartCfg.current.series[0].data = [];
+        for (let idx = res.data.length - 1; idx >= 0; idx--) {
+          const item = res.data[idx];
+          chartCfg.current?.xAxis.push(item.updated_at);
+          chartCfg.current?.series[0].data.push(item.data[0].value);
+          chartCfg.current?.series[1].data.push(item.data[1].value);
+        }
+      })
+      .finally(() => onEnd?.());
+  };
+
   return (
     <Flex.Row full align="center" className="@container/device-card relative overflow-hidden max-[1200px]:justify-center">
       <div className="max-w-[120px] relative text-center h-full">
@@ -78,27 +114,16 @@ export const DeviceCard: React.FC<IDeviceCardProps> = ({ url, online, cardData, 
           <DataCard data={cardData} />
         ) : showCont === "chart" ? (
           <CustomizeWrapperComponent loading={loading} timeout={10000} emptyDescription="暂无数据">
-            <LineChart
-              options={{
-                legend: {
-                  data: chartCfg?.legend,
-                  top: "5%",
-                },
-                xAxis: [
-                  {
-                    type: "category",
-                    data: chartCfg?.xAxis,
-                  },
-                ],
-                grid: {
-                  top: "25%",
-                  left: "10%",
-                },
-                yAxis: [{ type: "value" }],
-                tooltip: {},
-                series: chartCfg?.series,
-              }}
-            />
+            {chartCfg.current && (
+              <LineChartDemo
+                {...chartCfg.current}
+                fetchData={push_chart_data}
+                globalOptions={{
+                  grid: { top: "25%", left: "10%" },
+                  dataZoom: [{ type: "inside", realtime: true, start: 20, end: 80 }],
+                }}
+              />
+            )}
           </CustomizeWrapperComponent>
         ) : (
           <div className="p-2 size-full overflow-y-auto">{setParamsTab}</div>

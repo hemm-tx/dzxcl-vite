@@ -2,7 +2,7 @@ import { request } from "./useRequest";
 
 export interface ChartSeriesProps {
   name: string;
-  type: string;
+  type: "line";
   data: number[];
 }
 
@@ -10,6 +10,14 @@ export interface ChartDataProps {
   legend: string[];
   xAxis: string[];
   series: ChartSeriesProps[];
+}
+
+export interface DeviceDetailProps<T> {
+  data: T[];
+  page: number;
+  pageSize: number;
+  total: number;
+  status: number;
 }
 
 export class DeviceService {
@@ -25,5 +33,15 @@ export class DeviceService {
 
   static async get_full_data(): Promise<ResultProps<GetFullDataProps>> {
     return await request(`${this.url_prefix}/full_data`, {}, "GET");
+  }
+
+  static async get_device_detail<T>(
+    device_id: string,
+    start_time?: string,
+    end_time?: string,
+    page?: number,
+    page_size?: number
+  ): Promise<DeviceDetailProps<T>> {
+    return await request(`${this.url_prefix}/device_detail`, { device_id, page, page_size, start_time, end_time }, "GET");
   }
 }

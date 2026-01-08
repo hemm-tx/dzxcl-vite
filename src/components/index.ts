@@ -2,6 +2,8 @@ export { AxiosNavigation } from "./AxiosNavigation";
 
 export { BarChart, LineChart, PieChart } from "./echarts";
 export type { BarChartOption, LineChartOption, PieChartOption } from "./echarts/config";
+export { LineChartDemo } from "./LineChartDemo";
+export type { MLineChartDemoProps, MChartDemoFetchDataProps } from "./LineChartDemo";
 
 export { Border1, Border2, Border3, Border4, Border5, Border6, Border7 } from "./Border";
 export { Header } from "./Header";

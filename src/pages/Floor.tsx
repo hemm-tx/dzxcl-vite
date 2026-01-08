@@ -1,7 +1,19 @@
 import { useAppSelector, useAppDispatch, post_edit_device_params } from "@/store";
 import { Tabs, Button } from "antd";
-import React, { useState, useEffect } from "react";
-import { SVGForeignIcon, MPopCardModal, MIframe, Border6, LineChart, Flex, MControlPanel, MFumeHood, MPressureControl, DeviceOnlineBadge } from "@/components";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  SVGForeignIcon,
+  MPopCardModal,
+  MIframe,
+  Border6,
+  Flex,
+  MControlPanel,
+  MFumeHood,
+  MPressureControl,
+  DeviceOnlineBadge,
+  LineChartDemo,
+} from "@/components";
+import type { MChartDemoFetchDataProps } from "@/components";
 import { LineChartOutlined } from "@ant-design/icons";
 import { Slide, Zoom } from "react-awesome-reveal";
 import { DeviceService, type ChartDataProps } from "@/api";
@@ -9,6 +21,8 @@ import CameraCfg from "@/assets/json/cameraCfg.json";
 import HumitureCfg from "@/assets/json/humitureCfg.json";
 import DifferentialCfg from "@/assets/json/differentialCfg.json";
 import deviceCfg from "@/assets/json/deviceCfg.json";
+import { formattedDate_EST } from "@/assets/js";
+import { message } from "@/utils/antdGlobal";
 // import { message } from "@/utils/antdGlobal";
 
 interface IModalCfgProps {
@@ -207,25 +221,56 @@ interface MHumitureStatisticProps {
 }
 
 interface MHumitureProps extends IPopCardProps, MHumitureDataProps {}
-
 interface MDifferentialProps extends IPopCardProps, MDifferentialDataProps {}
-
 interface MCameraProps extends IPopCardProps {
   src: string;
 }
-
 const HumitureCard: React.FC<MHumitureProps> = ({ title, online, device_id, temperature, humidity, onClose }) => {
   const [iProps, setIProps] = useState<MHumitureStatisticProps[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [chartCfg, setChartCfg] = useState<ChartDataProps | undefined>(undefined);
+  const chartCfg = useRef<ChartDataProps | undefined>(undefined);
 
   const get_chart_data = async () => {
     setLoading(true);
     setOpen(true);
     await DeviceService.get_chart_data("wsd", device_id)
-      .then((res) => setChartCfg(res.data))
+      .then((res) => (chartCfg.current = res.data))
       .finally(() => setLoading(false));
+  };
+
+  const push_chart_data = (props: MChartDemoFetchDataProps) => {
+    const { start, end, onStart, onEnd } = props;
+    if (!chartCfg.current) return;
+    const current_xAxis = chartCfg.current.xAxis;
+    const total = current_xAxis.length + 100 > 1000 ? 1000 : current_xAxis.length + 100;
+    let query;
+    if (end && start) {
+      const start_time = formattedDate_EST(current_xAxis[current_xAxis.length > 900 ? current_xAxis.length - 900 : 0]);
+      query = DeviceService.get_device_detail<MDeviceDetailColumnProps>(device_id, start_time, undefined, 1, total);
+    } else {
+      const start_time = start ? formattedDate_EST(current_xAxis[current_xAxis.length > 900 ? current_xAxis.length - 900 : 0]) : undefined;
+      const end_time = end ? formattedDate_EST(current_xAxis[current_xAxis.length - 1 > 900 ? 900 : current_xAxis.length - 1]) : undefined;
+      query = DeviceService.get_device_detail<MDeviceDetailColumnProps>(device_id, start_time, end_time, 1, total);
+    }
+    onStart?.();
+    query
+      .then((res) => {
+        if (res.data.length <= 1) {
+          message.info("没有更多数据");
+          return;
+        }
+        if (!chartCfg.current) return;
+        chartCfg.current.xAxis = [];
+        chartCfg.current.series[0].data = [];
+        for (let idx = res.data.length - 1; idx >= 0; idx--) {
+          const item = res.data[idx];
+          chartCfg.current?.xAxis.push(item.updated_at);
+          chartCfg.current?.series[0].data.push(item.data[0].value);
+          chartCfg.current?.series[1].data.push(item.data[1].value);
+        }
+      })
+      .finally(() => onEnd?.());
   };
 
   const MStatistic: React.FC<MHumitureStatisticProps> = ({ label, value, unit, src }) => {
@@ -247,18 +292,8 @@ const HumitureCard: React.FC<MHumitureProps> = ({ title, online, device_id, temp
 
   useEffect(() => {
     setIProps([
-      {
-        label: "当前温度",
-        value: temperature ?? 0,
-        unit: "℃",
-        src: "/modal/temperature.png",
-      },
-      {
-        label: "当前湿度",
-        value: humidity ?? 0,
-        unit: "%RH",
-        src: "/modal/humidity.png",
-      },
+      { label: "当前温度", value: temperature ?? 0, unit: "℃", src: "/modal/temperature.png" },
+      { label: "当前湿度", value: humidity ?? 0, unit: "%RH", src: "/modal/humidity.png" },
     ]);
   }, [temperature, humidity]);
 
@@ -278,7 +313,7 @@ const HumitureCard: React.FC<MHumitureProps> = ({ title, online, device_id, temp
         </div>
       </Border6>
       <MPopCardModal title="房间温湿度数据趋势" loading={loading} open={open} onCancel={() => setOpen(false)}>
-        {chartCfg && <ChartDemo className="w-full h-80" {...chartCfg} />}
+        {chartCfg.current && <LineChartDemo className="w-full h-80" {...chartCfg.current} fetchData={push_chart_data} />}
       </MPopCardModal>
     </>
   );
@@ -287,14 +322,47 @@ const HumitureCard: React.FC<MHumitureProps> = ({ title, online, device_id, temp
 const DifferentialCard: React.FC<MDifferentialProps> = ({ differential, online, device_id, title, onClose }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [chartCfg, setChartCfg] = useState<ChartDataProps | undefined>(undefined);
+  const chartCfg = useRef<ChartDataProps | undefined>(undefined);
 
   const get_chart_data = async () => {
     setLoading(true);
     setOpen(true);
     await DeviceService.get_chart_data("yc", device_id)
-      .then((res) => setChartCfg(res.data))
+      .then((res) => (chartCfg.current = res.data))
       .finally(() => setLoading(false));
+  };
+
+  const push_chart_data = async (props: MChartDemoFetchDataProps) => {
+    const { start, end, onStart, onEnd } = props;
+    if (!chartCfg.current) return;
+    const current_xAxis = chartCfg.current.xAxis;
+    const total = current_xAxis.length + 100 > 1000 ? 1000 : current_xAxis.length + 100;
+    let query;
+    if (end && start) {
+      const start_time = formattedDate_EST(current_xAxis[current_xAxis.length > 900 ? current_xAxis.length - 900 : 0]);
+      query = DeviceService.get_device_detail<MDeviceDetailColumnProps>(device_id, start_time, undefined, 1, total);
+    } else {
+      const start_time = start ? formattedDate_EST(current_xAxis[current_xAxis.length > 900 ? current_xAxis.length - 900 : 0]) : undefined;
+      const end_time = end ? formattedDate_EST(current_xAxis[current_xAxis.length - 1 > 900 ? 900 : current_xAxis.length - 1]) : undefined;
+      query = DeviceService.get_device_detail<MDeviceDetailColumnProps>(device_id, start_time, end_time, 1, total);
+    }
+    onStart?.();
+    query
+      .then((res) => {
+        if (res.data.length <= 1) {
+          message.info("没有更多数据");
+          return;
+        }
+        if (!chartCfg.current) return;
+        chartCfg.current.xAxis = [];
+        chartCfg.current.series[0].data = [];
+        for (let idx = res.data.length - 1; idx >= 0; idx--) {
+          const item = res.data[idx];
+          chartCfg.current?.xAxis.push(item.updated_at);
+          chartCfg.current?.series[0].data.push(item.data[0].value);
+        }
+      })
+      .finally(() => onEnd?.());
   };
 
   return (
@@ -320,7 +388,7 @@ const DifferentialCard: React.FC<MDifferentialProps> = ({ differential, online, 
         </Flex>
       </Border6>
       <MPopCardModal title="房间压差数据趋势" loading={loading} open={open} onCancel={() => setOpen(false)}>
-        {chartCfg && <ChartDemo className="w-full h-80" {...chartCfg} />}
+        {chartCfg.current && <LineChartDemo className="w-full h-80" {...chartCfg.current} fetchData={push_chart_data} />}
       </MPopCardModal>
     </>
   );
@@ -331,28 +399,5 @@ const CameraCard: React.FC<MCameraProps> = ({ key, src, title, onClose }) => {
     <Border6 className="w-full h-60" key={key} {...{ title, onClose }}>
       <MIframe src={`http://localhost:8889/stream/${src}`} />
     </Border6>
-  );
-};
-
-const ChartDemo: React.FC<ComponentDefaultProps & ChartDataProps> = ({ className, legend, xAxis, series }) => {
-  return (
-    <LineChart
-      className={className}
-      options={{
-        legend: {
-          data: legend,
-          top: "5%",
-        },
-        xAxis: [
-          {
-            type: "category",
-            data: xAxis,
-          },
-        ],
-        yAxis: [{ type: "value" }],
-        tooltip: {},
-        series,
-      }}
-    />
   );
 };

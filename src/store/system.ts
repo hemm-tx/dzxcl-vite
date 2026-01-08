@@ -5,6 +5,8 @@ const counterSlice = createSlice({
   initialState: {
     animationDuration: 500,
     mediaMTXStart: false,
+    isMediaMTXStart: false,
+    mediaMtxStartLoading: false,
     cameraIconShow: true,
     humitureIconShow: true,
     differentialIconShow: false,
@@ -13,6 +15,12 @@ const counterSlice = createSlice({
   reducers: {
     setMediaMTXStart: (state, action) => {
       state.mediaMTXStart = action.payload;
+    },
+    setIsMediaMTXStart: (state, action) => {
+      state.isMediaMTXStart = action.payload;
+    },
+    setMediaMTXStartLoading: (state, action) => {
+      state.mediaMtxStartLoading = action.payload;
     },
     setAnimationDuration: (state, action) => {
       state.animationDuration = action.payload;
@@ -32,6 +40,14 @@ const counterSlice = createSlice({
   },
 });
 
-export const { setMediaMTXStart, setAnimationDuration, setCameraIconShow, setHumitureIconShow, setDifferentialIconShow, setDeviceIconShow } =
-  counterSlice.actions;
+export const {
+  setMediaMTXStart,
+  setIsMediaMTXStart,
+  setMediaMTXStartLoading,
+  setAnimationDuration,
+  setCameraIconShow,
+  setHumitureIconShow,
+  setDifferentialIconShow,
+  setDeviceIconShow,
+} = counterSlice.actions;
 export default counterSlice.reducer;

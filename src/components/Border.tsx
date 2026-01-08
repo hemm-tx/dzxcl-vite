@@ -1,4 +1,3 @@
-import { createContext, useContext } from "react";
 import "@/assets/styles/border.scss";
 
 interface IBorderBoxTitleProps {
@@ -7,9 +6,6 @@ interface IBorderBoxTitleProps {
 }
 
 interface IBorderBoxProps extends ContentComponentDefaultProps, IBorderBoxTitleProps {}
-
-const BorderTitleContext = createContext<IBorderBoxTitleProps | undefined>(undefined);
-
 interface ICloseBtnIconProps extends ComponentDefaultProps {
   onClick?: () => void;
 }
@@ -21,12 +17,11 @@ const CloseBtnIcon: React.FC<ICloseBtnIconProps> = ({ className, onClick }) => {
         {`
           .close-btn-group {
             cursor: pointer;
-          }
-          .close-btn-group {
             stroke: #2FE7FF;
-          }
-          .close-btn-group:hover {
-            stroke: #FF5733;
+            transition: stroke 0.3s ease;
+            &:hover {
+              stroke: #FF5733;
+            }
           }
         `}
       </style>
@@ -35,16 +30,14 @@ const CloseBtnIcon: React.FC<ICloseBtnIconProps> = ({ className, onClick }) => {
         <path d="M30 30 L98 98" fill="none" strokeWidth="4" />
         <path d="M30 98 L98 30" fill="none" strokeWidth="4" />
         <polyline id="close_btn" points="1,127 1,1 127,1 127,127 1,127" fill="transparent" strokeWidth="2" />
-        <animate attributeName="stroke" from="#2FE7FF" to="#FF5733" dur="0.3s" repeatCount="1" begin="close_btn.mouseover" />
-        <animate attributeName="stroke" from="#FF5733" to="#2FE7FF" dur="0.3s" repeatCount="1" begin="close_btn.mouseout" />
+        {/* <animate attributeName="stroke" from="#2FE7FF" to="#FF5733" dur="0.3s" repeatCount="1" begin="close_btn.mouseover" />
+        <animate attributeName="stroke" from="#FF5733" to="#2FE7FF" dur="0.3s" repeatCount="1" begin="close_btn.mouseout" /> */}
       </g>
     </svg>
   );
 };
 
-const BorderBoxTitle: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
-  const { title } = useContext(BorderTitleContext) || {};
-
+const BorderBoxTitle: React.FC<IBorderBoxProps> = ({ children, title }) => {
   return title ? (
     <>
       <div className="M-tit">
@@ -58,9 +51,7 @@ const BorderBoxTitle: React.FC<{ children?: React.ReactNode }> = ({ children }) 
   );
 };
 
-const BorderBoxTitle2: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
-  const { title, onClose } = useContext(BorderTitleContext) || {};
-
+const BorderBoxTitle2: React.FC<IBorderBoxProps> = ({ children, title, onClose }) => {
   return title ? (
     <div className="size-full flex flex-col relative">
       <div className="mb-2 flex justify-between items-center">
@@ -98,9 +89,7 @@ export const Border2: React.FC<IBorderBoxProps> = ({ children, className, title 
     <div className={className}>
       <div className="p-1 relative border-2 rounded-[10px] border-[#1070aa] size-full">
         <div className="p-[10px_15px] size-full bg-[#14328555] rounded-[10px]">
-          <BorderTitleContext.Provider value={{ title }}>
-            <BorderBoxTitle>{children}</BorderBoxTitle>
-          </BorderTitleContext.Provider>
+          <BorderBoxTitle title={title}>{children}</BorderBoxTitle>
         </div>
         <div className="for-b"></div>
         {classes.map((className, idx) => (
@@ -124,9 +113,7 @@ export const Border3: React.FC<IBorderBoxProps> = ({ children, className, title 
     <div className={className}>
       <div className="p-1 relative size-full">
         <div className="p-[10px_15px] size-full bg-[#14328555] rounded-[10px]">
-          <BorderTitleContext.Provider value={{ title }}>
-            <BorderBoxTitle>{children}</BorderBoxTitle>
-          </BorderTitleContext.Provider>
+          <BorderBoxTitle title={title}>{children}</BorderBoxTitle>
         </div>
         {classes.map((className, idx) => (
           <svg
@@ -199,9 +186,9 @@ export const Border6: React.FC<IBorderBoxProps> = ({ children, className, title,
     <div className={className}>
       <div className="p-1 relative size-full">
         <div className="p-[10px_15px] size-full bg-[#14328555]">
-          <BorderTitleContext.Provider value={{ title, onClose }}>
-            <BorderBoxTitle2>{children}</BorderBoxTitle2>
-          </BorderTitleContext.Provider>
+          <BorderBoxTitle2 title={title} onClose={onClose}>
+            {children}
+          </BorderBoxTitle2>
         </div>
         {classes.map((className, idx) => (
           <svg
@@ -227,9 +214,9 @@ export const Border7: React.FC<IBorderBoxProps> = ({ children, className, title,
     <div className={className}>
       <div className="p-1 relative size-full">
         <div className="p-[10px_15px] size-full bg-[#14328555] rounded-[10px]">
-          <BorderTitleContext.Provider value={{ title, onClose }}>
-            <BorderBoxTitle2>{children}</BorderBoxTitle2>
-          </BorderTitleContext.Provider>
+          <BorderBoxTitle2 title={title} onClose={onClose}>
+            {children}
+          </BorderBoxTitle2>
         </div>
       </div>
     </div>

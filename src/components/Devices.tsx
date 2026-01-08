@@ -301,7 +301,7 @@ export const MSprayTower: React.FC<MSprayTowerProps> = (props) => {
           {
             key: "current-ph",
             label: "当前PH值",
-            children: `${currentPH} cm`,
+            children: `${currentPH}`,
           },
           {
             key: "additive-pump-status",

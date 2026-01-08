@@ -8,12 +8,13 @@ import {
   // setFullData,
   get_full_data,
 } from "@/store";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Layout } from "antd";
 import { message, notification } from "@/utils/antdGlobal";
 import { Flex, Header as HeaderComponent, StarsBackground } from "@/components";
 // import { SocketService } from "@/assets/js";
+import { useMediaMTX } from "@/assets/js";
 
 export default function Index() {
   const { Header, Content } = Layout;
@@ -22,6 +23,7 @@ export default function Index() {
   const user = useAppSelector((state) => state.user);
   const { alarmTotal, logTotal, alarmTableData, alarmStatusData } = useAppSelector((state) => state.device);
   const [hisAlarmTotal, setHisAlarmTotal] = useState(0);
+  useMediaMTX();
 
   useEffect(() => {
     if (alarmTotal !== 0) {

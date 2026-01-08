@@ -29,7 +29,16 @@ export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 // 导出 action creators
-export { setMediaMTXStart, setAnimationDuration, setCameraIconShow, setHumitureIconShow, setDifferentialIconShow, setDeviceIconShow } from "./system";
+export {
+  setMediaMTXStart,
+  setIsMediaMTXStart,
+  setMediaMTXStartLoading,
+  setAnimationDuration,
+  setCameraIconShow,
+  setHumitureIconShow,
+  setDifferentialIconShow,
+  setDeviceIconShow,
+} from "./system";
 export { setIsMobile } from "./platformStore";
 export { login, login_out, post_Login, validate_token } from "./userStore";
 export { fetchWeather } from "./weatherStore";
