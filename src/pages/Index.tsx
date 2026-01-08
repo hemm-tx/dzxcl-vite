@@ -8,7 +8,7 @@ import {
   // setFullData,
   get_full_data,
 } from "@/store";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Layout } from "antd";
 import { message, notification } from "@/utils/antdGlobal";
@@ -71,12 +71,7 @@ export default function Index() {
   // }, [user.access_token]);
 
   useEffect(() => {
-    dispatch(get_full_data());
-    const _timer = setInterval(() => dispatch(get_full_data()), 5000);
-    return () => clearInterval(_timer);
-  }, []);
-
-  useEffect(() => {
+    let _timer: NodeJS.Timeout | undefined;
     dispatch(validate_token())
       .unwrap()
       .then(() => {
@@ -88,11 +83,14 @@ export default function Index() {
             message.success(`欢迎回来，${username}`);
           } else message.success("欢迎回来 !");
         }
+        dispatch(get_full_data());
+        _timer = setInterval(() => dispatch(get_full_data()), 5000);
       })
       .catch(() => {
         message.error("登录失效，请重新登录！");
         navigate("/login");
       });
+    return () => _timer && clearInterval(_timer);
   }, []);
 
   return (
